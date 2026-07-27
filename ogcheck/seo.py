@@ -230,6 +230,61 @@ def pages() -> list[Page]:
                 ),
             ],
         ),
+        Page(
+            slug="robots-txt-checker.html",
+            title="robots.txt checker — is yours blocking search engines by accident?",
+            description=(
+                "Free robots.txt validator. Catches the accidental 'Disallow: /' that hides your "
+                "whole site from Google, a missing Sitemap directive, and unreachable files."
+            ),
+            keywords="robots.txt checker, robots.txt validator, robots.txt test",
+            intro=(
+                "One stray line — <code>Disallow: /</code> — can hide your entire site from Google. "
+                "This free checker fetches your <code>robots.txt</code>, confirms it's reachable and "
+                "parseable, flags a site-wide block, and tells you whether it points at your sitemap."
+            ),
+            sections=[
+                (
+                    "The costly mistakes it catches",
+                    "<p><strong>Disallow: /</strong> (blocks everything — often left over from staging), "
+                    "a <strong>missing file</strong> (crawlers assume all-allowed, which may not be what "
+                    "you want), and <strong>no Sitemap: line</strong> (search engines crawl less "
+                    "efficiently).</p>",
+                ),
+                (
+                    "Check it now",
+                    "<p>Use the box above, or the API: "
+                    "<code>GET /robots?url=https://your-site.com</code>.</p>",
+                ),
+            ],
+        ),
+        Page(
+            slug="sitemap-validator.html",
+            title="sitemap.xml validator — is your sitemap valid and reachable?",
+            description=(
+                "Free sitemap.xml validator. Confirms your sitemap is reachable, valid XML, and "
+                "actually lists URLs — so search engines can crawl your site efficiently."
+            ),
+            keywords="sitemap validator, sitemap.xml checker, xml sitemap test",
+            intro=(
+                "A broken or empty <code>sitemap.xml</code> quietly hurts how well search engines "
+                "crawl your site. This free validator fetches yours, confirms it's valid XML, and "
+                "counts the URLs it lists."
+            ),
+            sections=[
+                (
+                    "What it verifies",
+                    "<p>That the file is <strong>reachable</strong> (not a 404 or 500), is "
+                    "<strong>valid XML</strong> (a single stray character breaks the whole thing for "
+                    "crawlers), and actually <strong>lists URLs</strong> rather than being empty.</p>",
+                ),
+                (
+                    "Check it now",
+                    "<p>Use the box above, or the API: "
+                    "<code>GET /sitemap?url=https://your-site.com</code>.</p>",
+                ),
+            ],
+        ),
     ]
 
 
