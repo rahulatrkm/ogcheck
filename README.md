@@ -3,6 +3,7 @@
 **Is your link preview broken? Find out in one request.**
 
 > 🟢 **Live:** https://ogcheck-app.azurewebsites.net (deployed on Azure App Service free tier)
+> 📦 **Repo:** https://github.com/rahulatrkm/ogcheck · Action: `uses: rahulatrkm/ogcheck@v1`
 
 You add an `og:image`, ship it, and forget. Weeks later a post gets half the
 clicks — because the image 404s and nothing told you. OGCheck catches it.

@@ -56,6 +56,16 @@ def app(environ, start_response):
             return respond("400 Bad Request", "application/json", body)
         report = validate_url(urls[0].strip())
         return respond("200 OK", "application/json", json.dumps(report.to_dict()).encode())
+    if path in ("/robots", "/sitemap"):
+        urls = query.get("url")
+        if not urls or not urls[0].strip():
+            body = json.dumps({"error": "provide ?url=<site>"}).encode()
+            return respond("400 Bad Request", "application/json", body)
+        from ogcheck.sitehealth import validate_robots, validate_sitemap
+
+        check = validate_robots if path == "/robots" else validate_sitemap
+        result = check(urls[0].strip()).to_dict()
+        return respond("200 OK", "application/json", json.dumps(result).encode())
     if path.endswith((".html", ".xml", ".txt")) and "/" not in path[1:]:
         got = _file_response(path.lstrip("/"))
         if got:

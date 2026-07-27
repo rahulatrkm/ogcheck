@@ -78,6 +78,9 @@ class Handler(BaseHTTPRequestHandler):
         if route == "/check":
             self._handle_check(parse_qs(parsed.query))
             return
+        if route in ("/robots", "/sitemap"):
+            self._handle_sitehealth(route, parse_qs(parsed.query))
+            return
         if route == "/sitemap.xml":
             self._send_file(_WEB_DIR / "sitemap.xml", "application/xml")
             return
@@ -104,6 +107,20 @@ class Handler(BaseHTTPRequestHandler):
             return
         report = validate_url(urls[0].strip())
         self._send_json(report.to_dict())
+
+    def _handle_sitehealth(self, route: str, query: dict[str, list[str]]) -> None:
+        ip = self.client_address[0]
+        if not _rate_ok(ip):
+            self._send_json({"error": "rate limit exceeded"}, status=429)
+            return
+        urls = query.get("url")
+        if not urls or not urls[0].strip():
+            self._send_json({"error": "provide ?url=<site>"}, status=400)
+            return
+        from ogcheck.sitehealth import validate_robots, validate_sitemap
+
+        check = validate_robots if route == "/robots" else validate_sitemap
+        self._send_json(check(urls[0].strip()).to_dict())
 
     def log_message(self, *args: object) -> None:  # keep the console quiet
         return

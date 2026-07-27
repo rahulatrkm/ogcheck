@@ -5,7 +5,7 @@ accounts. Just copy, paste, and hit submit. Post to **one or two channels first*
 see if anyone engages, then do the rest — don't blast everywhere at once.
 
 **Live URL:** https://ogcheck-app.azurewebsites.net
-**Repo:** (push the repo public first, then use that URL below)
+**Repo:** https://github.com/rahulatrkm/ogcheck (public) · Action: `uses: rahulatrkm/ogcheck@v1`
 
 > Tone rules: be a maker sharing a free useful thing, not a salesperson. Answer
 > every comment. Never fake engagement. If it flops, that's data — not failure.
