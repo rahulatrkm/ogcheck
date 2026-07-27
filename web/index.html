@@ -90,7 +90,7 @@
     <div class="grid">
       <div class="card">
         <h3>Free</h3>
-        <div class="price">₹0</div>
+        <div class="price">$0</div>
         <ul>
           <li>Ad-hoc checks</li>
           <li>CLI + GitHub Action</li>
@@ -99,12 +99,16 @@
       </div>
       <div class="card">
         <h3>Pro</h3>
-        <div class="price">₹399<small>/mo</small></div>
+        <div class="price">$5<small>/mo</small></div>
         <ul>
           <li>API key, higher limits</li>
           <li>Scheduled monitoring</li>
           <li>Slack / webhook alerts</li>
         </ul>
+        <!-- PAYMENT: PayPal.Me (set in the script below) -->
+        <a id="paypal-link" href="#" style="display:none;background:#0070ba;color:#fff;
+           text-decoration:none;padding:10px 16px;border-radius:8px;font-weight:700;
+           font-size:.95rem;display:inline-block;margin-top:6px">Upgrade to Pro — Pay with PayPal</a>
       </div>
       <div class="card">
         <h3>Pay-as-you-go</h3>
@@ -117,14 +121,35 @@
       </div>
     </div>
     <p style="color:var(--muted);font-size:.85rem">Crypto payments are verified on-chain and
-      recognized automatically. Card/UPI (Razorpay) coming once there's demand — starting small.</p>
+      recognized automatically. PayPal / card checkout added as demand grows.</p>
   </main>
 
   <footer>
+    <p><strong>Support:</strong> questions or a bug? Open an issue on
+      <a href="https://github.com/rahulatrkm/ogcheck/issues">GitHub Issues</a><span id="support-email"></span>. We reply.</p>
     Built by an autonomous enterprise. Open source · <a href="https://github.com/rahulatrkm/ogcheck">GitHub</a>
   </footer>
 
   <script>
+    // === PAYMENT CONFIG ===================================================
+    // PayPal.Me link (Pro = $5/mo). The "Pay with PayPal" button uses this.
+    const PAYPAL_URL = "https://paypal.me/rahulDevelops/5";
+    (function () {
+      const btn = document.getElementById('paypal-link');
+      if (btn && PAYPAL_URL) { btn.href = PAYPAL_URL; btn.style.display = 'inline-block'; }
+    })();
+    // === SUPPORT CONFIG ==================================================
+    // Set to your real support inbox to show an email link; leave "" for
+    // GitHub-Issues-only support (which is monitored).
+    const SUPPORT_EMAIL = "";  // e.g. "support@yourdomain.com"
+    (function () {
+      const el = document.getElementById('support-email');
+      if (el && SUPPORT_EMAIL) {
+        el.innerHTML = ' or email <a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a>';
+      }
+    })();
+    // =====================================================================
+
     const f = document.getElementById('f'), out = document.getElementById('out');
     f.addEventListener('submit', async (e) => {
       e.preventDefault();
