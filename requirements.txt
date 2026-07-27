@@ -1,0 +1,4 @@
+# OGCheck runs on the Python standard library alone.
+# gunicorn is only needed for the WSGI deployment (e.g. Azure App Service);
+# it is NOT required to run locally (use `python -m ogcheck.api`).
+gunicorn>=21.0

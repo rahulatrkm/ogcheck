@@ -1,0 +1,23 @@
+# OGCheck — a reusable GitHub Action that fails CI on a broken link preview.
+#
+# Add to any repo as a workflow step:
+#
+#   - uses: automaton/ogcheck@v1
+#     with:
+#       url: https://your-site.com
+#
+# Runs the stdlib CLI — no install, no dependencies. A free distribution channel.
+name: OGCheck
+description: Validate Open Graph / social-preview tags and confirm og:image loads.
+branding:
+  icon: check-circle
+  color: blue
+inputs:
+  url:
+    description: The URL to check.
+    required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: python "${{ github.action_path }}/ogcheck/__main__.py" "${{ inputs.url }}"

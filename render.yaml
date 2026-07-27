@@ -1,0 +1,13 @@
+# Render.com free-tier deploy for OGCheck.
+# Connect this repo in Render, or use the Blueprint (render.yaml) directly.
+services:
+  - type: web
+    name: ogcheck
+    runtime: docker
+    plan: free
+    rootDir: businesses/ogcheck
+    dockerfilePath: businesses/ogcheck/Dockerfile
+    healthCheckPath: /healthz
+    envVars:
+      - key: PORT
+        value: "8000"

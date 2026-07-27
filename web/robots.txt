@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ogcheck.dev/sitemap.xml

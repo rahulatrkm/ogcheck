@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social preview validator — test how your link will look · OGCheck</title>
+  <meta name="description" content="Test how your link will appear on X/Twitter, LinkedIn, Facebook, Slack and WhatsApp. Free social preview validator that also checks your og:image loads." />
+  <meta name="keywords" content="social preview validator, link preview test, twitter card validator" />
+  <link rel="canonical" href="https://ogcheck.dev/social-preview-validator.html" />
+  <meta property="og:title" content="Social preview validator — test how your link will look" />
+  <meta property="og:description" content="Test how your link will appear on X/Twitter, LinkedIn, Facebook, Slack and WhatsApp. Free social preview validator that also checks your og:image loads." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://ogcheck.dev/social-preview-validator.html" />
+  <meta property="og:image" content="https://ogcheck.dev/preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+            color:#0f172a; background:#f8fafc; line-height:1.65; }
+    .wrap { max-width:720px; margin:0 auto; padding:40px 20px 64px; }
+    h1 { font-size:2rem; line-height:1.2; }
+    h2 { margin-top:32px; font-size:1.3rem; }
+    a { color:#2563eb; }
+    code { background:#eef2ff; padding:2px 6px; border-radius:6px; font-size:.9em; }
+    pre { background:#0f172a; color:#e2e8f0; padding:14px; border-radius:10px; overflow:auto; font-size:.85rem; }
+    .try { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:20px; margin:28px 0; }
+    .row { display:flex; gap:8px; }
+    input { flex:1; padding:11px 13px; border:1px solid #cbd5e1; border-radius:10px; font-size:1rem; }
+    button { background:#2563eb; color:#fff; border:0; border-radius:10px; padding:11px 18px; font-weight:600; cursor:pointer; }
+    #out { display:none; margin-top:12px; }
+    nav.crumb { font-size:.85rem; color:#64748b; margin-bottom:16px; }
+    .related { margin-top:44px; border-top:1px solid #e2e8f0; padding-top:20px; }
+    footer { color:#64748b; font-size:.85rem; margin-top:40px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="crumb"><a href="/">OGCheck</a> · guide</nav>
+    <h1>Social preview validator — test how your link will look</h1>
+    <p>Before you share a link, test how it renders. This free validator inspects your social-preview tags across platforms and flags the exact problems — including the one most tools miss: <strong>an og:image that doesn't load</strong>.</p>
+
+    <div class="try">
+      <strong>Check your page now — free, no signup:</strong>
+      <form id="f" class="row" style="margin-top:10px">
+        <input id="u" type="url" placeholder="https://your-site.com/page" required />
+        <button type="submit">Check</button>
+      </form>
+      <pre id="out"></pre>
+    </div>
+
+    <h2>Why previews differ by platform</h2>
+<p>X uses <code>twitter:card</code>; Facebook/LinkedIn/Slack use Open Graph. If Twitter tags are absent, X falls back to OG — but a summary card, not a large image. Set <code>twitter:card = summary_large_image</code> for the big preview.</p>
+<h2>Monitor it, don&#x27;t just check once</h2>
+<p>Previews break silently when an image is moved or a CDN changes. Add the check to CI (or Pro monitoring) so you find out immediately, not weeks later when traffic drops.</p>
+
+
+    <div class="related">
+      <h2>Related guides</h2>
+      <ul><li><a href="/og-image-not-showing.html">og:image not showing on Facebook, Twitter/X or LinkedIn — how to fix it</a></li><li><a href="/check-open-graph-tags.html">How to check your Open Graph tags (free validator)</a></li></ul>
+      <p><a href="/">← Back to OGCheck</a></p>
+    </div>
+
+    <footer>OGCheck — a free Open Graph / social-preview validator. Built by an autonomous enterprise.</footer>
+  </div>
+  <script>
+    const f=document.getElementById('f'),o=document.getElementById('out');
+    f.addEventListener('submit',async e=>{e.preventDefault();o.style.display='block';o.textContent='Checking…';
+      try{const r=await fetch('/check?url='+encodeURIComponent(document.getElementById('u').value));
+        o.textContent=JSON.stringify(await r.json(),null,2);}catch(x){o.textContent='Error: '+x;}});
+  </script>
+</body>
+</html>
