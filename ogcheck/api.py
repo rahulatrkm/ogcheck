@@ -22,20 +22,21 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from ogcheck.core import validate_url
+from ogcheck.keys import rate_for, verify_key
 
 _WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 
-# Naive per-IP rate limit for the free tier: N requests per rolling window.
-_RATE_LIMIT = 30
+# Per-IP rate limit. The ceiling depends on whether a valid Pro API key is
+# presented: free tier gets FREE_RATE, a valid key gets PRO_RATE.
 _RATE_WINDOW_S = 60.0
 _hits: dict[str, list[float]] = defaultdict(list)
 
 
-def _rate_ok(ip: str) -> bool:
+def _rate_ok(ip: str, limit: int) -> bool:
     now = time.monotonic()
     window = _hits[ip]
     window[:] = [t for t in window if now - t < _RATE_WINDOW_S]
-    if len(window) >= _RATE_LIMIT:
+    if len(window) >= limit:
         return False
     window.append(now)
     return True
@@ -91,13 +92,18 @@ class Handler(BaseHTTPRequestHandler):
         if route.endswith(".html") and "/" not in route[1:]:
             self._send_file(_WEB_DIR / route.lstrip("/"), "text/html; charset=utf-8")
             return
+        # IndexNow key file (plain text at site root, proves ownership).
+        if route.endswith(".txt") and "/" not in route[1:]:
+            self._send_file(_WEB_DIR / route.lstrip("/"), "text/plain; charset=utf-8")
+            return
         self._send_json({"error": "not found"}, status=404)
 
     def _handle_check(self, query: dict[str, list[str]]) -> None:
         ip = self.client_address[0]
-        if not _rate_ok(ip):
+        record = verify_key(self.headers.get("X-API-Key"))
+        if not _rate_ok(ip, rate_for(record)):
             self._send_json(
-                {"error": "rate limit exceeded — grab an API key for higher limits"},
+                {"error": "rate limit exceeded — upgrade to Pro for higher limits"},
                 status=429,
             )
             return
@@ -110,8 +116,9 @@ class Handler(BaseHTTPRequestHandler):
 
     def _handle_sitehealth(self, route: str, query: dict[str, list[str]]) -> None:
         ip = self.client_address[0]
-        if not _rate_ok(ip):
-            self._send_json({"error": "rate limit exceeded"}, status=429)
+        record = verify_key(self.headers.get("X-API-Key"))
+        if not _rate_ok(ip, rate_for(record)):
+            self._send_json({"error": "rate limit exceeded — upgrade to Pro"}, status=429)
             return
         urls = query.get("url")
         if not urls or not urls[0].strip():
