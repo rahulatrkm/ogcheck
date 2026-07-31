@@ -2,7 +2,7 @@
 
 **Is your link preview broken? Find out in one request.**
 
-> 🟢 **Live:** https://ogcheck-app.azurewebsites.net (deployed on Azure App Service free tier)
+> 🟢 **Live:** https://ogcheck.onrender.com (deployed on Azure App Service free tier)
 > 📦 **Repo:** https://github.com/rahulatrkm/ogcheck · Action: `uses: rahulatrkm/ogcheck@v1`
 
 You add an `og:image`, ship it, and forget. Weeks later a post gets half the
@@ -68,8 +68,8 @@ docker build -t ogcheck . && docker run -p 8000:8000 ogcheck
 
 | | Price | |
 | --- | --- | --- |
-| Free | ₹0 | ad-hoc checks, CLI, GitHub Action, 30 req/min |
-| Pro | ₹399/mo | API key, higher limits, scheduled monitoring + alerts |
+| Free | $0 | ad-hoc checks, CLI, GitHub Action, 30 req/min |
+| Pro | $5/mo | API key, higher limits, scheduled monitoring + alerts |
 | Pay-as-you-go | USDC on Base | no account; on-chain, auto-recognized |
 
 ## Honest status

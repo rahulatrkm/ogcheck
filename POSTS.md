@@ -4,7 +4,7 @@ Everything below is written to be **posted by you** (the owner) on your own
 accounts. Just copy, paste, and hit submit. Post to **one or two channels first**,
 see if anyone engages, then do the rest — don't blast everywhere at once.
 
-**Live URL:** https://ogcheck-app.azurewebsites.net
+**Live URL:** https://ogcheck.onrender.com
 **Repo:** https://github.com/rahulatrkm/ogcheck (public) · Action: `uses: rahulatrkm/ogcheck@v1`
 
 > Tone rules: be a maker sharing a free useful thing, not a salesperson. Answer
@@ -22,29 +22,28 @@ you click, glance, and submit.
 **Ordered by what works for a new account TODAY** (Hacker News gates Show HN
 behind account karma — do it later, after warming up; see the note at the end).
 
-> 🧑 **HUMAN NEEDED — 1. Publish the GitHub repo + Action** (best move; no gate,
-> evergreen). Push this repo public, tag `v1`, and it's a usable Action:
-> `uses: <you>/ogcheck@v1`. Optionally list on the GitHub Marketplace. This is
-> the strongest, most durable channel for a developer tool.
+> ✅ **DONE — 1. GitHub repo + Action** — published:
+> https://github.com/rahulatrkm/ogcheck (public, MIT, v1 release).
+> Usable as `uses: rahulatrkm/ogcheck@v1`.
 
-> 🧑 **HUMAN NEEDED — 2. Publish a dev.to article** (no karma gate, indexes on
-> Google, permanent): https://dev.to/new — paste section 3 below. Set a canonical
-> URL to your repo/site and tags: `webdev, seo, python, showdev`.
+> ✅ **DONE — 2. dev.to article** — PUBLISHED and live:
+> https://dev.to/rahul_85ac39adcd5c87cfd93/your-blogs-link-preview-is-probably-broken-heres-a-1-line-ci-check-2mab
+> (published autonomously via the official dev.to API — see `publish_devto.py`).
 
 > 🧑 **HUMAN NEEDED — 3. Post to Reddit r/webdev.** Pre-filled title + URL:
-> https://www.reddit.com/r/webdev/submit?title=I%20built%20a%20free%20tool%20that%20fails%20your%20CI%20if%20your%20og%3Aimage%20is%20broken&url=https%3A%2F%2Fogcheck-app.azurewebsites.net
+> https://www.reddit.com/r/webdev/submit?title=I%20built%20a%20free%20tool%20that%20fails%20your%20CI%20if%20your%20og%3Aimage%20is%20broken&url=https%3A%2F%2Fogcheck.onrender.com
 > (Very new Reddit accounts may hit a karma filter; if so, comment a bit first.)
 
 > 🧑 **HUMAN NEEDED — 4. Indie Hackers:** https://www.indiehackers.com/new-post — paste section 4 below.
 
 > 🧑 **HUMAN NEEDED — 5. Tweet it (X).** Pre-filled tweet:
-> https://twitter.com/intent/tweet?text=Your%20link%20preview%20is%20probably%20broken%20and%20nothing%20told%20you.%20og%3Aimage%20404s%2C%20relative%20URLs%2C%20moved%20CDNs.%20OGCheck%20checks%20it%20%28and%20that%20the%20image%20actually%20loads%29%20in%20one%20request.%20Free%3A%20https%3A%2F%2Fogcheck-app.azurewebsites.net
+> https://twitter.com/intent/tweet?text=Your%20link%20preview%20is%20probably%20broken%20and%20nothing%20told%20you.%20og%3Aimage%20404s%2C%20relative%20URLs%2C%20moved%20CDNs.%20OGCheck%20checks%20it%20%28and%20that%20the%20image%20actually%20loads%29%20in%20one%20request.%20Free%3A%20https%3A%2F%2Fogcheck.onrender.com
 
 > ⏳ **LATER — Hacker News (Show HN).** HN restricts Show HN for brand-new
 > accounts (this is normal anti-spam, not a rejection). Warm up first: over 1–2
 > weeks, leave a few genuine comments on threads you find interesting to build a
 > little karma, then post the Show HN (pre-filled link):
-> https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fogcheck-app.azurewebsites.net&t=Show%20HN%3A%20OGCheck%20%E2%80%93%20validate%20your%20link%20preview%20%28and%20check%20og%3Aimage%20loads%29%20in%20CI
+> https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fogcheck.onrender.com&t=Show%20HN%3A%20OGCheck%20%E2%80%93%20validate%20your%20link%20preview%20%28and%20check%20og%3Aimage%20loads%29%20in%20CI
 > Read https://news.ycombinator.com/showhn.html first. HN is a high-value
 > audience worth earning — don't burn it with a premature post.
 
@@ -68,7 +67,7 @@ the accountable click.
 > 200**. It's a JSON API, a one-line CLI, and a GitHub Action you can drop in CI
 > so a broken preview fails the build.
 >
-> Live (free, no signup): https://ogcheck-app.azurewebsites.net
+> Live (free, no signup): https://ogcheck.onrender.com
 > CLI: `python -m ogcheck https://your-site.com`
 >
 > It's pure Python stdlib, zero dependencies. Would love feedback — especially
@@ -82,7 +81,7 @@ the accountable click.
 
 **Title:** Show HN: OGCheck – validate your link preview (and check og:image loads) in CI
 
-**URL field:** https://ogcheck-app.azurewebsites.net
+**URL field:** https://ogcheck.onrender.com
 
 **First comment (post immediately after submitting):**
 > Author here. Every social-preview *generator* exists, but I kept getting bitten
@@ -114,7 +113,7 @@ the accountable click.
 > click-through quietly drops and **nothing alerts you.**
 >
 > ## Catch it in CI
-> I built [OGCheck](https://ogcheck-app.azurewebsites.net) to fail the build when
+> I built [OGCheck](https://ogcheck.onrender.com) to fail the build when
 > that happens:
 >
 > ```bash
@@ -146,7 +145,7 @@ the accountable click.
 **Body:**
 > Shipped a small thing to scratch my own itch: a validator that confirms your
 > social-preview `og:image` actually returns 200 (not just that the tag exists).
-> API + CLI + GitHub Action, free, no signup: https://ogcheck-app.azurewebsites.net
+> API + CLI + GitHub Action, free, no signup: https://ogcheck.onrender.com
 >
 > The bet: *generating* OG images is crowded, but *monitoring* them for silent
 > breakage isn't. Not sure there's revenue in it yet — testing whether the pain is
@@ -161,7 +160,7 @@ the accountable click.
 > og:image 404s, relative URLs, moved CDNs — silent click-through killers.
 >
 > OGCheck checks your preview (and that the image actually loads) in one request.
-> Free, no signup: https://ogcheck-app.azurewebsites.net
+> Free, no signup: https://ogcheck.onrender.com
 
 ---
 

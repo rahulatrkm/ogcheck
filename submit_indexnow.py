@@ -14,7 +14,7 @@ import json
 import urllib.error
 import urllib.request
 
-HOST = "ogcheck-app.azurewebsites.net"
+HOST = "ogcheck.onrender.com"
 KEY = "0f12fa59ec055b54eefb37fa82176ff3"
 KEY_LOCATION = f"https://{HOST}/{KEY}.txt"
 
