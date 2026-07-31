@@ -1,12 +1,13 @@
-# Render.com free-tier deploy for OGCheck.
+# Render.com free-tier deploy for OGCheck (native Python runtime, no Docker).
 # In Render: New > Blueprint > connect this repo. Free, auto-deploys on push.
 services:
   - type: web
     name: ogcheck
-    runtime: docker
+    runtime: python
     plan: free
-    dockerfilePath: ./Dockerfile
+    buildCommand: "pip install gunicorn"
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT --timeout 120 wsgi:app"
     healthCheckPath: /healthz
     envVars:
-      - key: PORT
-        value: "8000"
+      - key: PYTHON_VERSION
+        value: "3.12"
