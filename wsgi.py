@@ -13,13 +13,32 @@ from pathlib import Path
 from urllib.parse import parse_qs
 
 from ogcheck.core import validate_url
+from ogcheck.keys import rate_for, verify_key
 
 _WEB_DIR = Path(__file__).resolve().parent / "web"
 _CONTENT = {
     ".html": "text/html; charset=utf-8",
     ".xml": "application/xml",
     ".txt": "text/plain; charset=utf-8",
+    ".png": "image/png",
 }
+
+# Per-IP rate limiting for the deployed app (free vs. Pro by API key).
+import time  # noqa: E402
+from collections import defaultdict  # noqa: E402
+
+_RATE_WINDOW_S = 60.0
+_hits: dict[str, list[float]] = defaultdict(list)
+
+
+def _rate_ok(ip: str, limit: int) -> bool:
+    now = time.monotonic()
+    window = _hits[ip]
+    window[:] = [t for t in window if now - t < _RATE_WINDOW_S]
+    if len(window) >= limit:
+        return False
+    window.append(now)
+    return True
 
 
 def _file_response(name: str):
@@ -34,6 +53,8 @@ def app(environ, start_response):
     """Minimal WSGI app — same routes as the stdlib server."""
     path = environ.get("PATH_INFO", "/")
     query = parse_qs(environ.get("QUERY_STRING", ""))
+    ip = environ.get("REMOTE_ADDR", "?")
+    api_record = verify_key(environ.get("HTTP_X_API_KEY"))
 
     def respond(status: str, ctype: str, body: bytes):
         start_response(status, [
@@ -50,6 +71,9 @@ def app(environ, start_response):
     if path == "/healthz":
         return respond("200 OK", "application/json", b'{"status": "ok"}')
     if path == "/check":
+        if not _rate_ok(ip, rate_for(api_record)):
+            return respond("429 Too Many Requests", "application/json",
+                           b'{"error": "rate limit exceeded - upgrade to Pro for higher limits"}')
         urls = query.get("url")
         if not urls or not urls[0].strip():
             body = json.dumps({"error": "provide ?url=<page to check>"}).encode()
@@ -57,6 +81,9 @@ def app(environ, start_response):
         report = validate_url(urls[0].strip())
         return respond("200 OK", "application/json", json.dumps(report.to_dict()).encode())
     if path in ("/robots", "/sitemap"):
+        if not _rate_ok(ip, rate_for(api_record)):
+            return respond("429 Too Many Requests", "application/json",
+                           b'{"error": "rate limit exceeded - upgrade to Pro"}')
         urls = query.get("url")
         if not urls or not urls[0].strip():
             body = json.dumps({"error": "provide ?url=<site>"}).encode()
@@ -66,7 +93,7 @@ def app(environ, start_response):
         check = validate_robots if path == "/robots" else validate_sitemap
         result = check(urls[0].strip()).to_dict()
         return respond("200 OK", "application/json", json.dumps(result).encode())
-    if path.endswith((".html", ".xml", ".txt")) and "/" not in path[1:]:
+    if path.endswith((".html", ".xml", ".txt", ".png")) and "/" not in path[1:]:
         got = _file_response(path.lstrip("/"))
         if got:
             return respond("200 OK", got[0], got[1])
