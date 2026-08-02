@@ -83,3 +83,14 @@ def test_image_check_passes_on_200(monkeypatch) -> None:
     report = validate_html(_GOOD, url="https://example.com/post", check_image=True)
     assert report.ok
     assert report.image_status == 200
+
+
+def test_unreachable_page_is_unscored_not_zero() -> None:
+    """A blocked or dead page must not be reported as a genuine score of 0."""
+    from ogcheck.core import validate_url
+
+    report = validate_url("https://this-domain-does-not-exist-xyz123.invalid", timeout=3)
+    assert report.score is None
+    assert report.ok is False
+    assert any(i.code == "fetch_failed" for i in report.issues)
+    assert report.to_dict()["score"] is None

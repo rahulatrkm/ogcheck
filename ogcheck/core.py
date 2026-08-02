@@ -58,7 +58,8 @@ class Report:
 
     url: str
     ok: bool = False
-    score: int = 0
+    # None means the page could not be fetched, which is different from scoring zero.
+    score: int | None = None
     title: str | None = None
     tags: dict[str, str] = field(default_factory=dict)
     image_url: str | None = None
