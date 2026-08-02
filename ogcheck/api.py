@@ -88,6 +88,10 @@ class Handler(BaseHTTPRequestHandler):
         if route == "/robots.txt":
             self._send_file(_WEB_DIR / "robots.txt", "text/plain; charset=utf-8")
             return
+        # Social preview. Crawlers reject an image served as anything but image/*.
+        if route == "/og.png":
+            self._send_file(_WEB_DIR / "og.png", "image/png")
+            return
         # Serve any generated SEO page by slug (safe: no path traversal).
         if route.endswith(".html") and "/" not in route[1:]:
             self._send_file(_WEB_DIR / route.lstrip("/"), "text/html; charset=utf-8")
