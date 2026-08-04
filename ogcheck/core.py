@@ -22,6 +22,8 @@ from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from urllib.parse import urljoin, urlparse
 
+from .safefetch import BlockedURL, open_url
+
 USER_AGENT = "OGCheck/1.0 (+https://github.com/automaton/ogcheck)"
 
 # The tags that matter for a correct social preview, and the severity if missing.
@@ -112,21 +114,22 @@ class _MetaParser(HTMLParser):
 
 
 def _fetch_text(url: str, *, timeout: float, max_bytes: int = 2_000_000) -> str:
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        raw = response.read(max_bytes)
-        charset = response.headers.get_content_charset() or "utf-8"
-    return raw.decode(charset, errors="replace")
+    _status, body, charset, _final = open_url(
+        url, timeout=timeout, max_bytes=max_bytes, user_agent=USER_AGENT
+    )
+    return body.decode(charset or "utf-8", errors="replace")
 
 
 def _check_image(url: str, *, timeout: float) -> int | None:
     """Return the HTTP status of the image URL, or None if unreachable."""
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT}, method="GET")
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return int(response.status)
-    except urllib.error.HTTPError as exc:
-        return int(exc.code)
+        status, _body, _charset, _final = open_url(
+            url, timeout=timeout, max_bytes=1, user_agent=USER_AGENT
+        )
+        return int(status)
+    except BlockedURL:
+        # An og:image pointing inside the network is not a status to report.
+        return None
     except Exception:
         return None
 
@@ -140,9 +143,17 @@ def validate_url(url: str, *, timeout: float = 10.0, check_image: bool = True) -
 
     try:
         html = _fetch_text(url, timeout=timeout)
-    except Exception as exc:
+    except BlockedURL as exc:
         report.fetch_error = str(exc)
-        report.issues.append(Issue("error", "fetch_failed", f"Could not fetch the page: {exc}"))
+        report.issues.append(Issue("error", "fetch_blocked", str(exc)))
+        return report
+    except Exception:
+        # The wording is deliberately the same whatever went wrong. Echoing the
+        # socket error told a caller the difference between a refused port, a
+        # filtered one and a timeout, which is a port scanner with extra steps.
+        message = "Could not fetch the page."
+        report.fetch_error = message
+        report.issues.append(Issue("error", "fetch_failed", message))
         return report
 
     return validate_html(html, url=report.url, timeout=timeout, check_image=check_image)

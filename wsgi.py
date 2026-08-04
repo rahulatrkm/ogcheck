@@ -41,6 +41,27 @@ def _rate_ok(ip: str, limit: int) -> bool:
     return True
 
 
+def client_ip(environ) -> str:
+    """The address to rate limit, read the only way that is not spoofable.
+
+    Behind Render every request arrives from the same proxy address, so using
+    REMOTE_ADDR alone put every user of the service in one shared bucket: thirty
+    requests from anyone locked out everybody. The obvious repair -- trust
+    X-Forwarded-For -- is worse, because the client sends that header and the
+    proxy only *appends* to it, so `X-Forwarded-For: <anything>` on each request
+    lands in a fresh bucket every time and the limit stops existing.
+
+    The last entry is the one the proxy in front of us wrote, and it is the only
+    part of the header a caller cannot choose.
+    """
+    forwarded = environ.get("HTTP_X_FORWARDED_FOR", "")
+    if forwarded:
+        hops = [h.strip() for h in forwarded.split(",") if h.strip()]
+        if hops:
+            return hops[-1]
+    return environ.get("REMOTE_ADDR", "?")
+
+
 def _file_response(name: str):
     path = _WEB_DIR / name
     if not path.exists() or "/" in name:
@@ -53,7 +74,7 @@ def app(environ, start_response):
     """Minimal WSGI app — same routes as the stdlib server."""
     path = environ.get("PATH_INFO", "/")
     query = parse_qs(environ.get("QUERY_STRING", ""))
-    ip = environ.get("REMOTE_ADDR", "?")
+    ip = client_ip(environ)
     api_record = verify_key(environ.get("HTTP_X_API_KEY"))
 
     def respond(status: str, ctype: str, body: bytes):

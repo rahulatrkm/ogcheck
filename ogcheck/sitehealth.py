@@ -15,12 +15,12 @@ more value per visitor, more SEO landing pages, at no extra hosting cost.
 
 from __future__ import annotations
 
-import urllib.request
 from dataclasses import dataclass, field
 from urllib.parse import urljoin, urlparse
 from xml.etree import ElementTree
 
 from ogcheck.core import Issue
+from ogcheck.safefetch import BlockedURL, open_url
 
 USER_AGENT = "OGCheck/1.0 (+https://github.com/rahulatrkm/ogcheck)"
 
@@ -55,13 +55,13 @@ def _origin(url: str) -> str:
 
 
 def _fetch(url: str, *, timeout: float) -> tuple[int | None, str]:
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            body = response.read(2_000_000).decode("utf-8", errors="replace")
-            return int(response.status), body
-    except urllib.error.HTTPError as exc:
-        return int(exc.code), ""
+        status, body, charset, _final = open_url(
+            url, timeout=timeout, max_bytes=2_000_000, user_agent=USER_AGENT
+        )
+        return int(status), body.decode(charset or "utf-8", errors="replace")
+    except BlockedURL:
+        return None, ""
     except Exception:  # noqa: BLE001 - unreachable/DNS/TLS
         return None, ""
 
